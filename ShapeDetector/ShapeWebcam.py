@@ -7,10 +7,9 @@ def getContours(img):
 	contours,hierarchy = cv2.findContours(img,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
 	for x in contours:
 		area = cv2.contourArea(x)
-		#print("A: " +str(area))
-
+		
 		#for reducing noise
-		if area>1000:
+		if area>2000:
 			#cv2.drawContours(img2,x,-1,(0,255,0),5)
 			peri = cv2.arcLength(x,True)
 			#print("P: " +str(peri))
@@ -24,7 +23,7 @@ def getContours(img):
 			elif objCorner==4:
 				#deviation of 15%
 				ratio = w/float(h)
-				if ratio > 0.85 and ratio < 1.15:
+				if ratio > 0.80 and ratio < 1.20:
 					objType="Square"
 				else:
 					objType="Rectangle"
@@ -41,12 +40,10 @@ vdo.set(3,640)	#width id is 3
 vdo.set(4,480)	#height id is 4
 vdo.set(10,100)	#brightness id is 10
 
-while True:	#video is nothing but a sequence of images
+while True:
 	success, img = vdo.read()
 	success, img2 = vdo.read()
 	path="shapes.png"
-	#img = cv2.imread(path)
-	#img2 = cv2.imread(path)
 	imgGray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 	imgBlur = cv2.GaussianBlur(imgGray,(7,7),1)
 	imgCanny = cv2.Canny(imgBlur, 60,60)
@@ -54,6 +51,6 @@ while True:	#video is nothing but a sequence of images
 
 	cv2.imshow("Video output ",img2)
 	#cv2.imshow("Contours", imgCanny)
-	if cv2.waitKey(1) & 0xFF ==ord('e'):	#e to exit
+	if cv2.waitKey(1) & 0xFF ==ord('x'):	#e to exit
 		cv2.destroyAllWindows()
 		break
