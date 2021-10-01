@@ -1,0 +1,42 @@
+import cv2
+
+import smtplib
+
+cap = cv2.VideoCapture(0)
+
+model=cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
+
+def mssgs():
+    from email.message import EmailMessage
+    msg=EmailMessage()
+    msg['Subject']='Someone Spotted before the camera'
+    msg['From']='Esteemed Security'
+    msg['To']='mohit.baranwal27@gmail.com'
+    msg.set_content("There is someone found in front of the camera")
+    server=smtplib.SMTP_SSL('smtp.gmail.com',465)
+    server.login("#Your email","#your password")
+    server.send_message(msg)
+    server.quit()
+
+while True:
+    ret, photo= cap.read()
+    faces= model.detectMultiScale(photo)
+    if(len(faces))!=0:
+        mssgs()
+        
+    if(len(faces))==0:
+        pass
+    else:
+        x1=faces[0][0]
+        y1=faces[0][1]
+        x2=x1+faces[0][1]
+        y2=y1+faces[0][1]
+        model_pic=cv2.rectangle(photo, (x1,y1), (x2,y2), [154,255,244],3)
+        cv2.imshow("pic",model_pic)
+        if cv2.waitKey(5)==13:
+            cap.release()
+            break;
+            
+cv2.destroyAllWindows()
+
+cap.release()
